@@ -2,7 +2,7 @@
 
 # Streaming and recording video from FireWire.
 #
-# Copiright 2013 Denis Pynkin (denis_pynkin@epam.com), Andrej Zakharevich (andrej@zahar.ws)
+# Copyright © 2013 Denis Pynkin (denis_pynkin@epam.com), Andrej Zakharevich (andrej@zahar.ws)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,6 +37,22 @@ if [ "$1" == '-s' ]; then
 	streaming="-s $striming_res -metadata title=\"$metadata_title\" -f flv -c:v libx264 $streaming_adress"
 fi
 
-dvgrab - | \
-	avconv -i pipe: -ar 44100 $streaming -c:v libx264 -c:a flac -f matroska\
-       	-ar 44100  "recording-$dtime.mkv" -metadata title="$metadata_title"
+capture() {
+	dvgrab - | \
+		avconv -i pipe: -ar 44100 $streaming -c:v libx264 -c:a flac -f matroska\
+	       	-ar 44100  "recording-$dtime.mkv" -metadata title="$metadata_title" &
+
+	capture
+	PID=$!
+}
+
+
+while true
+do
+	if ! kill -0 $PID 2> /dev/null; then
+		echo "Capture failed. Restarting."
+		capture
+	fi
+	sleep 0.5
+done
+
