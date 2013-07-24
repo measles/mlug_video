@@ -48,8 +48,21 @@ if [ "$1" == '-s' ]; then
 	streaming="-f flv -vcodec flv -s $streaming_res -aspect 16:9 -qscale 3.5 -acodec libmp3lame -ab 24k -ar 22050 $streaming_adress"
 fi
 
-dvgrab - | \
-	ffmpeg -deinterlace -i - \
-	-f matroska -vcodec h263p -qscale 3.5 -acodec libvorbis -ar 22050 \
-	"$dtime.mkv" \
-	$streaming
+capture() {
+	dvgrab - | \
+		ffmpeg -deinterlace -i - \
+		-f matroska -vcodec h263p -qscale 3.5 -acodec libvorbis -ar 22050 \
+		"$dtime.mkv" \
+		$streaming &
+	PID=$!
+}
+
+
+while true
+do
+	if ! kill -0 $PID 2> /dev/null; then
+		echo "Capture failed. Restarting."
+		capture
+	fi
+	sleep 0.5
+done
