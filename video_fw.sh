@@ -19,8 +19,7 @@
 #
 
 dtime=`date +%d.%m.%Y-%H.%M.%S`
-date=`date +%d.%m.%Y`
-
+#date=`date +%d.%m.%Y`
 #metadata_title="linuxovka $date"
 
 if [ "$1" == '-s' ]; then
@@ -52,5 +51,5 @@ fi
 dvgrab - | \
 	ffmpeg -deinterlace -i - \
 	-f matroska -vcodec h263p -qscale 3.5 -acodec libvorbis -ar 22050 \
-	`date +%d.%m.%Y-%H.%M.%S`.mkv \
+	"$dtime.mkv" \
 	$streaming
