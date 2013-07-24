@@ -11,4 +11,4 @@ Beside this script can send video stream to external server by RTMP protocol. In
 
 For gapless rtmp streaming scipt changes video resolution to 320xsomething. At the moment script can detect aspect ratio (4:3 and 16:9 supported) and set correct resolution.
 
-Script relies on **dvgab**, ***mediainfo*** and **ffmpeg** tools, so they has to be installed if you are planning to use ths script.
+Script relies on **dvgab**, **mediainfo** and **ffmpeg** tools, so they has to be installed if you are planning to use ths script.
