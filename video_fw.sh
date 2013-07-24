@@ -21,19 +21,32 @@
 dtime=`date +%d.%m.%Y-%H.%M.%S`
 date=`date +%d.%m.%Y`
 
-# 4:3
-#streaming_aspect="4:3"
-#streaming_res="320x240"
-# 16:9
-streaming_aspect="16:9"
-streaming_res="360x288"
-metadata_title="linuxovka $date"
+#metadata_title="linuxovka $date"
 
 if [ "$1" == '-s' ]; then
 	if [ -z $2 ]; then
 		echo "Streaming requested but no address given"
 		exit 1
 	fi
+
+	# Defining video aspect 
+	md5=`md5sum<<<$dtime`
+	tempfile="/tmp/mlug_video_${filename%% *}.avi"
+	dvgrab -  2>/dev/null| \
+		ffmpeg -i - -an -fs 3K $tempfile 2>/dev/null
+	streaming_aspect=`mediainfo --Inform="Video;%DisplayAspectRatio/String%" $tempfile 2>/dev/null`
+	rm $tempfile
+
+	# Defining resolution for video streaming
+	case "$streaming_aspect" in
+		"4:3") streaming_res="320x240"
+			;;
+		"16:9") streaming_res="360x288"
+			;;
+	esac
+	
+	echo $streaming_res
+	exit 0
 
 	streaming_adress="$2"
 	streaming="-f flv -vcodec flv -s $streaming_res -aspect 16:9 -qscale 3.5 -acodec libmp3lame -ab 24k -ar 22050 $streaming_adress"
