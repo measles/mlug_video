@@ -45,9 +45,6 @@ if [ "$1" == '-s' ]; then
 			;;
 	esac
 	
-	echo $streaming_res
-	exit 0
-
 	streaming_adress="$2"
 	streaming="-f flv -vcodec flv -s $streaming_res -aspect 16:9 -qscale 3.5 -acodec libmp3lame -ab 24k -ar 22050 $streaming_adress"
 fi
