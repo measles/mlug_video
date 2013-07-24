@@ -41,8 +41,6 @@ capture() {
 	dvgrab - | \
 		avconv -i pipe: -ar 44100 $streaming -c:v libx264 -c:a flac -f matroska\
 	       	-ar 44100  "recording-$dtime.mkv" -metadata title="$metadata_title" &
-
-	capture
 	PID=$!
 }
 
