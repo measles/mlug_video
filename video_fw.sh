@@ -21,8 +21,9 @@
 dtime=`date +%d.%m.%Y-%H.%M.%S`
 #date=`date +%d.%m.%Y`
 #metadata_title="linuxovka $date"
+delay=2
 
-if [ "$1" == '-s' ]; then
+if [ "$1" = '-s' ]; then
 	if [ -z $2 ]; then
 		echo "Streaming requested but no address given"
 		exit 1
@@ -55,14 +56,20 @@ capture() {
 		"$dtime.mkv" \
 		$streaming &
 	PID=$!
+	exec_time=`date +%s`
 }
 
 
 while true
 do
+	last_exec_time=`date +%s`
 	if ! kill -0 $PID 2> /dev/null; then
 		echo "Capture failed. Restarting."
 		capture
 	fi
-	sleep 0.5
+	sleep $delay
+
+	if [ $((exec_time-last_exec_time)) -le $((delay+3)) ]; then
+		delay=$((delay+10))
+	fi
 done
