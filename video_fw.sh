@@ -31,7 +31,7 @@ if [ "$1" == '-s' ]; then
 
 	# Defining video aspect 
 	md5=`md5sum<<<$dtime`
-	tempfile="/tmp/mlug_video_${filename%% *}.avi"
+	tempfile="/tmp/mlug_video_${md5%% *}.avi"
 	dvgrab -  2>/dev/null| \
 		ffmpeg -i - -an -fs 3K $tempfile 2>/dev/null
 	streaming_aspect=`mediainfo --Inform="Video;%DisplayAspectRatio/String%" $tempfile 2>/dev/null`
