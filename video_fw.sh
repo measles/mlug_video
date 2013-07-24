@@ -22,9 +22,11 @@ dtime=`date +%d.%m.%Y-%H.%M.%S`
 date=`date +%d.%m.%Y`
 
 # 4:3
-striming_res="320x240"
+#streaming_aspect="4:3"
+#streaming_res="320x240"
 # 16:9
-#striming_res="360x288"
+streaming_aspect="16:9"
+streaming_res="360x288"
 metadata_title="linuxovka $date"
 
 if [ "$1" == '-s' ]; then
@@ -34,9 +36,11 @@ if [ "$1" == '-s' ]; then
 	fi
 
 	streaming_adress="$2"
-	streaming="-s $striming_res -metadata title=\"$metadata_title\" -f flv -c:v libx264 $streaming_adress"
+	streaming="-f flv -vcodec flv -s $streaming_res -aspect 16:9 -qscale 3.5 -acodec libmp3lame -ab 24k -ar 22050 $streaming_adress"
 fi
 
 dvgrab - | \
-	avconv -i pipe: -ar 44100 $streaming -c:v libx264 -c:a flac -f matroska\
-       	-ar 44100  "recording-$dtime.mkv" -metadata title="$metadata_title"
+	ffmpeg -deinterlace -i - \
+	-f matroska -vcodec h263p -qscale 3.5 -acodec libvorbis -ar 22050 \
+	`date +%d.%m.%Y-%H.%M.%S`.mkv \
+	$streaming
