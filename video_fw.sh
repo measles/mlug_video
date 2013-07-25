@@ -56,20 +56,14 @@ capture() {
 		"$dtime.mkv" \
 		$streaming &
 	PID=$!
-	exec_time=`date +%s`
 }
 
 
 while true
 do
-	last_exec_time=`date +%s`
 	if ! kill -0 $PID 2> /dev/null; then
 		echo "Capture failed. Restarting."
 		capture
 	fi
 	sleep $delay
-
-	if [ $((exec_time-last_exec_time)) -le $((delay+3)) ]; then
-		delay=$((delay+10))
-	fi
 done
