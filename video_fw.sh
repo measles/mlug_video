@@ -34,8 +34,14 @@ if [ "$1" = '-s' ]; then
 	tempfile="/tmp/mlug_video_${md5%% *}.avi"
 	dvgrab -  2>/dev/null| \
 		ffmpeg -i - -an -fs 3K $tempfile 2>/dev/null
-	streaming_aspect=`mediainfo --Inform="Video;%DisplayAspectRatio/String%" $tempfile 2>/dev/null`
-	rm $tempfile
+
+	if [ $? -eq "0" ]; then
+		streaming_aspect=`mediainfo --Inform="Video;%DisplayAspectRatio/String%" $tempfile 2>/dev/null`
+		rm $tempfile
+	else
+		echo "Failed to capture a sample."
+		exit 2
+	fi
 
 	# Defining resolution for video streaming
 	case "$streaming_aspect" in
