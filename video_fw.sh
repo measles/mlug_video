@@ -61,7 +61,10 @@ capture() {
 
 while true
 do
-	if ! kill -0 $PID 2> /dev/null; then
+	if [ -z "$PID" ]; then
+		echo "Starting capture"
+		capture
+	elif ! kill -0 $PID 2> /dev/null; then
 		echo "Capture failed. Restarting."
 		capture
 	fi
