@@ -30,7 +30,7 @@ if [ "$1" = '-s' ]; then
 	fi
 
 	# Defining video aspect 
-	md5=`md5sum<<<$dtime`
+	md5=`echo $dtime | md5sum`
 	tempfile="/tmp/mlug_video_${md5%% *}.avi"
 	dvgrab -  2>/dev/null| \
 		ffmpeg -i - -an -fs 3K $tempfile 2>/dev/null
